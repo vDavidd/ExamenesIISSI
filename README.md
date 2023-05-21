@@ -255,11 +255,11 @@ exports.show = async function (req, res) {
 ### Procedimiento
 
 ### Laboratorios de Frontend
-1. LAB 4 - Setup & Navigation: https://github.com/IISSI2-IS/Lab4-FrontEnd-Setup-Navigation
-2. LAB 5 - ReactNative Basics: https://github.com/IISSI2-IS/Lab5-FrontEnd-ReactNativeBasics
-3. LAB 6 - RestfulAPI & Queries: https://github.com/IISSI2-IS/Lab6-FrontEnd-RestfulAPI-Queries
-4. LAB 7 - FlexLayout & Forms: https://github.com/IISSI2-IS/Lab7-FrontEnd-FlexLayout-Forms
-5. LAB 8 - Forms Validation & POST Requests: https://github.com/IISSI2-IS/Lab8-FormsValidation-POSTRequests
+1. LAB 4 - Setup & Navigation: https://github.com/IISSI2-IS-2022-2023/Lab4-FrontEnd-ReactNativeBasics
+2. LAB 5 - ReactNative Basics: https://github.com/IISSI2-IS-2022-2023/Lab5-FrontEnd-RestfulAPI-Queries
+3. LAB 6 - RestfulAPI & Queries: https://github.com/IISSI2-IS-2022-2023/Lab6-FrontEnd-FlexLayout-Forms
+4. LAB 7 - FlexLayout & Forms: https://github.com/IISSI2-IS-2022-2023/Lab7-FrontEnd-FormsValidation-POSTRequests
+5. LAB 8 - Forms Validation & POST Requests: https://github.com/IISSI2-IS-2022-2023/Lab8-FrontEnd-PUT-DELETE-Forms-Requests
 
 #### Ejemplo de EndPoints `RestaurantEndPoints.js`
 ```JavaScript
@@ -736,7 +736,8 @@ const styles = StyleSheet.create({
   ...
 })
 ```
-### Cambios en validacion:
+### 123.Cambios en validacion:
+Links a lab:
 Lo hago porque se trata de un textInput
 ```JavaScript
 const checkSum100 = (fats, proteins, carbohydrates) => {
