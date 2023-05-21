@@ -399,8 +399,42 @@ function create (data) {
 
 export { getAll, getDetail, getRestaurantCategories, create }
 ```
+### Gui direcciones
+## 1.1. Flexbox
+
+React native components use Flexbox algorithm to define the layout of its children. Flexbox is also available in standard CSS styles definition for web interfaces.
+
+For instance, within a `View` component we can include some children, such as `Text`, `Pressable`, `Image`, `InputItems` or nested `View`. The parent `View` can define the Flexbox behaviour of these children (children of these children do not inherit these properties). The most common properties to be defined are:
+
+* `flexDirection` which can take two values: `column` (default) if we want its children to render vertically or `row` if we want them to be rendered horizontally. Check
+* `justifyContent` which can take the following values:
+  * `flex-start` (default). The contents are distributed at the start of the primary axis (the flex direction determines the primary and secondary axis)
+  * `center`. The contents are distributed at the center.
+  * `flex-end`. The contents are distributed at the end.
+  * `space-around` and `space-between` so the contentes are distributed evenly.
+* `alignItems` define how the content will be aligned along the secondary axis (depending on the `flexDirection`)
+  * `flex-start`,
+  * `center`,
+  * `flex-end`,
+  * `stretch` (default) contents will be stretched to fill the space available
+
+You can experiment with these properties and values at the following example:
+<https://snack.expo.dev/@afdez/flex-example>
+
+Please, take your time to understand the behaviour of Flexbox algorithm.
+
+There are some more properties that defines the Flexbox algorithm behaviour, you can learn more at: <https://reactnative.dev/docs/flexbox>
 ### Examen prueba
 ```JavaScript
+ app.route('/restaurants/:restaurantId/promote')
+    .patch(
+      middlewares.isLoggedIn,
+      middlewares.hasRole('owner'),
+      middlewares.checkEntityExists(Restaurant, 'restaurantId'),
+      middlewares.checkRestaurantOwnership,
+      RestaurantController.promote)
+}
+
   const [restaurantToBePromoted, setRestaurantToBePromoted] = useState(null)
   
 <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }} >
@@ -466,6 +500,29 @@ export { getAll, getDetail, getRestaurantCategories, create }
   }
           
  ``` 
+ 
+###Examen septiembre circulito euro
+```JavaScript
+ <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }} >
+            <TextSemiBold>Shipping: <TextSemiBold textStyle={{ color: brandPrimary }}>{item.shippingCosts.toFixed(2)}€</TextSemiBold></TextSemiBold>
+            {item.isInexpensive &&
+                <TextRegular textStyle={[styles.badge, { color: brandSuccess, borderColor: brandSuccess }] }>€</TextRegular>
+            }
+            {!item.isInexpensive &&
+            <TextRegular textStyle={[styles.badge, { color: brandPrimary, borderColor: brandPrimary }] }>€€</TextRegular>
+            }
+        </View>
+    // Solucion
+  badge: {
+    textAlign: 'center',
+    borderWidth: 2,
+    width: 45,
+    paddingVertical: 2,
+    paddingHorizontal: 10,
+    borderRadius: 10
+  }
+```
+ 
 ### Examen Junio - Tarde:
 
 #### Todos los cambios dentro de SCREENS en archivo `CreateProductScreen.js`:
