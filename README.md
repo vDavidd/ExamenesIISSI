@@ -736,3 +736,120 @@ const styles = StyleSheet.create({
   ...
 })
 ```
+### Cambios en validacion:
+Lo hago porque se trata de un textInput
+```JavaScript
+const checkSum100 = (fats, proteins, carbohydrates) => {
+  fats = parseFloat(fats)
+  proteins = parseFloat(proteins)
+  carbohydrates = parseFloat(carbohydrates)
+
+  if ((fats < 0 || proteins < 0 || carbohydrates < 0) || (fats + proteins + carbohydrates) !== 100) {
+    return false
+  }
+
+  return true
+}
+
+// Solution
+const checkCalories = (fats, proteins, carbohydrates) => {
+  fats = parseFloat(fats)
+  proteins = parseFloat(proteins)
+  carbohydrates = parseFloat(carbohydrates)
+
+  const calories = fats * 9 + proteins * 4 + carbohydrates * 4
+
+  return calories <= 1000
+}
+
+ check('fats').custom((values, { req }) => {
+        const { fats, proteins, carbohydrates } = req.body
+        return checkSum100(fats, proteins, carbohydrates)
+      }).withMessage('The values of fat, protein and carbohydrates must be in the range [0, 100] and the sum must be 100.'),
+      check('fats').custom((values, { req }) => {
+        const { fats, proteins, carbohydrates } = req.body
+        return checkCalories(fats, proteins, carbohydrates)
+      }).withMessage('The number of calories must not be greater than 1000.')
+
+```
+
+#### Solo un promoted sino no puedo crear
+```JavaScript
+const checkBusinessRuleOneResturantPromotedByOwner = async (ownerId, promotedValue) => {
+  let isBusinessRuleToBeBroken = false
+  if (promotedValue === 'true') {
+    try {
+      const promotedRestaurants = await Restaurant.findAll({ where: { userId: ownerId, promoted: true } })
+      if (promotedRestaurants.length !== 0) {
+        isBusinessRuleToBeBroken = true
+      }
+    } catch (error) {
+      isBusinessRuleToBeBroken = true
+    }
+  }
+  return isBusinessRuleToBeBroken ? Promise.reject(new Error('Only one promoted per owner')) : Promise.resolve()
+} 
+
+ check('promoted')
+        .custom(async (value, { req }) => {
+          return checkBusinessRuleOneResturantPromotedByOwner(req.user.id, value)
+        })
+        .withMessage('You can only promote one restaurant at a time')
+```
+
+### Cambios raros en controllers
+
+#### Transaccion no puede haber dos al mismo tiempo, si hay cambiar
+```JavaScript
+exports.promote = async function (req, res) {
+  const t = await models.sequelize.transaction()
+  try {
+    const existingPromotedRestaurant = await Restaurant.findOne({ where: { userId: req.user.id, promoted: true } })
+    if (existingPromotedRestaurant) {
+      await Restaurant.update(
+        { promoted: false },
+        { where: { id: existingPromotedRestaurant.id } },
+        { transaction: t }
+      )
+    }
+    await Restaurant.update(
+      { promoted: true },
+      { where: { id: req.params.restaurantId } },
+      { transaction: t }
+    )
+    await t.commit()
+    const updatedRestaurant = await Restaurant.findByPk(req.params.restaurantId)
+    res.json(updatedRestaurant)
+  } catch (err) {
+    await t.rollback()
+    res.status(500).send(err)
+  }
+  ```
+ #### Comprobar precio medio
+ ```JavaScript
+ const updateRestaurantInexpensiveness = async function (restaurantId) {
+  const resultOtherRestaurants = await Product.findAll({
+    where: {
+      restaurantId: { [Sequelize.Op.ne]: restaurantId }
+    },
+    attributes: [
+      [Sequelize.fn('AVG', Sequelize.col('price')), 'computedAvgPrice']
+    ]
+  })
+  const resultCurrentRestaurant = await Product.findAll({
+    where: {
+      restaurantId: restaurantId
+    },
+    attributes: [
+      [Sequelize.fn('AVG', Sequelize.col('price')), 'computedAvgPrice']
+    ]
+  })
+  const avgPriceOtherRestaurants = resultOtherRestaurants[0].dataValues.computedAvgPrice
+  const avgPriceCurrentRestaurant = resultCurrentRestaurant[0].dataValues.computedAvgPrice
+  const isInexpensive = avgPriceCurrentRestaurant < avgPriceOtherRestaurants
+  Restaurant.update({ isInexpensive: isInexpensive }, { where: { id: restaurantId } })
+} 
+```
+
+  
+ 
